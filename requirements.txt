@@ -1,3 +1,5 @@
 flask
 spotipy
 Gunicorn
+pandas
+scikit-learn
