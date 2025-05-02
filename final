@@ -1,4 +1,5 @@
-pip install flask spotipy 
+#pip install flask spotipy
+#pip freeze > requirements.txt
 # app.py
 from flask import Flask, request, redirect
 import spotipy
