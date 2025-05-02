@@ -31,10 +31,6 @@ def callback():
 if __name__ == "__main__":
     app.run()
 
-export SPOTIPY_CLIENT_ID="your_client_id"
-export SPOTIPY_CLIENT_SECRET="your_client_secret"
-export SPOTIPY_REDIRECT_URI="http://localhost:8888/callback"
-
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 
