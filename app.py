@@ -16,16 +16,27 @@ sp_oauth = SpotifyOAuth(
 
 @app.route("/")
 def login():
+    if 'token_info' in session:
+        return redirect('/callback')  # or home/dashboard
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
 @app.route("/callback")
 def callback():
-    code = request.args.get("code")
-    token_info = sp_oauth.get_access_token(code)
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-
-    recommendations = generate_recommendations(sp)
+    try:
+        session.clear()
+        code = request.args.get('code')
+        token_info = sp_oauth.get_access_token(code)
+        session['token_info'] = token_info
+        sp = spotipy.Spotify(auth=token_info['access_token'])
+        recommendations = generate_recommendations(sp)
+        return render_template('results.html', recs=recommendations)
+    except spotipy.exceptions.SpotifyException as e:
+        print("Spotify API error:", e)
+        return "Spotify authorization failed", 403
+    except Exception as e:
+        print("General error:", e)
+        return "An error occurred", 500
 
     html_output = ""
     for cluster, songs in recommendations.items():
