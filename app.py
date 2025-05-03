@@ -1,10 +1,11 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session, url_for
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from recommender import generate_recommendations
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-default-secret")
 
 sp_oauth = SpotifyOAuth(
     client_id=os.getenv("SPOTIFY_CLIENT_ID"),
