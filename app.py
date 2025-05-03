@@ -24,14 +24,13 @@ def login():
 @app.route("/callback")
 def callback():
     try:
-        session.clear()
         code = request.args.get('code')
         if code is None:
             return "Authorization code not found", 400
 
-        token_info = sp_oauth.get_access_token(code)
+        token_info = sp_oauth.get_cached_token()
         session['token_info'] = token_info
-        sp = spotipy.Spotify(auth=token_info['access_token'])
+        sp = get_spotify_client()
         recommendations = generate_recommendations(sp)
         return render_template('results.html', recs=recommendations)
        
@@ -41,6 +40,18 @@ def callback():
     except Exception as e:
         print("General error:", e)
         return "An error occurred", 500
+
+def get_spotify_client():
+    token_info = session.get('token_info', None)
+
+    if not token_info:
+        raise Exception("No token info in session")
+
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        session['token_info'] = token_info  # update with new token
+
+    return spotipy.Spotify(auth=token_info['access_token'])
 
 """
     html_output = ""
