@@ -1,11 +1,11 @@
-from flask import Flask, request, redirect, session, url_for
+from flask import Flask, request, redirect, session, url_for, render_template
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from recommender import generate_recommendations
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-default-secret")
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "gosteelers")
 
 sp_oauth = SpotifyOAuth(
     client_id=os.getenv("SPOTIFY_CLIENT_ID"),
@@ -27,7 +27,10 @@ def callback():
     try:
         session.clear()
         code = request.args.get('code')
-        token_info = sp_oauth.get_access_token(code)
+        token_info = sp_oauth.get_cached_token()
+        if not token_info:
+            code = request.args.get("code")
+            token_info = sp_oauth.get_access_token(code)
         session['token_info'] = token_info
         sp = spotipy.Spotify(auth=token_info['access_token'])
         recommendations = generate_recommendations(sp)
