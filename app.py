@@ -34,13 +34,14 @@ def callback():
         sp = spotipy.Spotify(auth=token_info['access_token'])
         recommendations = generate_recommendations(sp)
         return render_template('results.html', recs=recommendations)
+        """
     except spotipy.exceptions.SpotifyException as e:
         print("Spotify API error:", e)
         return "Spotify authorization failed", 403
     except Exception as e:
         print("General error:", e)
         return "An error occurred", 500
-
+"""
 
     html_output = ""
     for cluster, songs in recommendations.items():
