@@ -12,8 +12,10 @@ sp_oauth = SpotifyOAuth(
     client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
     redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
     scope="user-top-read",
-    cache_path="/tmp/.cache"  # For Render compatibility
+    cache_path="/tmp/.cache"
 )
+print("Client ID:", os.getenv("SPOTIFY_CLIENT_ID"))
+print("Redirect URI:", os.getenv("SPOTIFY_REDIRECT_URI"))
 
 @app.route("/")
 def login():
@@ -27,10 +29,10 @@ def callback():
     try:
         session.clear()
         code = request.args.get('code')
-        token_info = sp_oauth.get_cached_token()
-        if not token_info:
-            code = request.args.get("code")
-            token_info = sp_oauth.get_access_token(code)
+        if code is None:
+            return "Authorization code not found", 400
+
+        token_info = sp_oauth.get_access_token(code)
         session['token_info'] = token_info
         sp = spotipy.Spotify(auth=token_info['access_token'])
         recommendations = generate_recommendations(sp)
@@ -42,6 +44,7 @@ def callback():
         print("General error:", e)
         return "An error occurred", 500
 
+"""
     html_output = ""
     for cluster, songs in recommendations.items():
         html_output += f"<h3>Cluster {cluster}</h3><ul>"
@@ -50,6 +53,6 @@ def callback():
         html_output += "</ul>"
 
     return html_output
-
+"""
 if __name__ == "__main__":
     app.run(debug=True)
