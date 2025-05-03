@@ -14,8 +14,6 @@ sp_oauth = SpotifyOAuth(
     scope="user-top-read",
     cache_path="/tmp/.cache"
 )
-print("Client ID:", os.getenv("SPOTIFY_CLIENT_ID"))
-print("Redirect URI:", os.getenv("SPOTIFY_REDIRECT_URI"))
 
 @app.route("/")
 def login():
