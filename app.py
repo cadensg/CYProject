@@ -41,7 +41,7 @@ def callback():
     except Exception as e:
         print("General error:", e)
         return "An error occurred", 500
-"""
+
 
     html_output = ""
     for cluster, songs in recommendations.items():
@@ -51,6 +51,6 @@ def callback():
         html_output += "</ul>"
 
     return html_output
-
+"""
 if __name__ == "__main__":
     app.run(debug=True)
