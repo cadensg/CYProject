@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: spotify-recommender
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: SPOTIFY_CLIENT_ID
+        value: YOUR_CLIENT_ID
+      - key: SPOTIFY_CLIENT_SECRET
+        value: YOUR_CLIENT_SECRET
+      - key: SPOTIFY_REDIRECT_URI
+        value: https://yourapp.onrender.com/callback
